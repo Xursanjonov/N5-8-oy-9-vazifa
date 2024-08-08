@@ -1,11 +1,11 @@
 
-export const adminMiddleware = (req, res, next)=>{
+export const adminMiddleware = (req, res, next) => {
     let role = req?.user?.role
-    if(role === "admin" || role === "owner"){
+    if (role === "admin" || role === "owner") {
         next()
-    }else{
+    } else {
         res.status(403).json({
-            msg:"Access denied.",
+            msg: "Access denied.",
             variant: "error",
             payload: null,
         })

@@ -74,30 +74,28 @@ class UsersController {
           variant: "error",
           payload: null,
         });
-
       const { username, password } = req.body;
-
       const existingUser = await Users.findOne({ username });
-
       if (existingUser)
         return res.status(400).json({
           msg: "User already exists.",
           variant: "error",
           payload: null,
         });
-
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
-
       const user = await Users.create({
         ...req.body,
         password: hashedPassword,
+      });
+      const token = jwt.sign({ _id: user._id, role: user.role }, JWT_SECRET, {
+        expiresIn: "1h",
       });
 
       res.status(201).json({
         msg: "User registered successfully",
         variant: "success",
-        payload: user,
+        payload: { user, token },
       });
     } catch (err) {
       res.status(500).json({
@@ -117,7 +115,6 @@ class UsersController {
         variant: "error",
         payload: null,
       });
-
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword)
       return res.status(400).json({
@@ -125,11 +122,9 @@ class UsersController {
         variant: "error",
         payload: null,
       });
-
     const token = jwt.sign({ _id: user._id, role: user.role }, JWT_SECRET, {
       expiresIn: "1h",
     });
-
     res.status(200).json({
       msg: "Logged in successfully",
       variant: "success",
@@ -164,7 +159,8 @@ class UsersController {
           payload: null,
         });
 
-      req.body.password = existingUser.password; //
+      const salt = await bcrypt.genSalt(10);
+      req.body.password = await bcrypt.hash(existingUser.password, salt);;
 
       let user = await Users.findByIdAndUpdate(id, req.body, { new: true });
       res.status(200).json({

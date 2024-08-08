@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-
 const JWT_SECRET = 'iskandar';
 
 export const auth = (req, res, next) => {

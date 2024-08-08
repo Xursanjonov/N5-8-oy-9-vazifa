@@ -13,7 +13,7 @@ router.put("/api/blogs/:id", [auth, ownerMiddleware], BlogsController.update)
 router.delete("/api/blogs/:id", [auth, ownerMiddleware], BlogsController.delete)
 // Users
 router.get('/api/profile', [auth, adminMiddleware], UsersController.getProfile)
-router.get('/api/users', [auth, adminMiddleware], UsersController.getAllUsers)
+router.get('/api/users', UsersController.getAllUsers)
 router.get('/api/users/search', [auth, adminMiddleware], UsersController.getUserSearch)
 router.post('/api/users/sign-up', [auth, ownerMiddleware], UsersController.registerUser)
 router.post('/api/users/sign-in', [auth, ownerMiddleware], UsersController.loginUser)

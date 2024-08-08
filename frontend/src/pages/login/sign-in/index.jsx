@@ -5,17 +5,21 @@ import { useDispatch } from 'react-redux';
 import { setToken, setUser } from '../../../context/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 const SignIn = () => {
+    const [newUser, setNewUser] = React.useState({ username: 'john112', password: '12345666' })
     const [signIn, { data, isSuccess }] = useSignInMutation()
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const handleSubmit = (values) => {
         signIn(values)
+        console.log(values)
     };
+    console.log(data)
+
     useEffect(() => {
         if (isSuccess) {
             dispatch(setToken(data?.payload?.token))
             dispatch(setUser(data?.payload?.user))
-            navigate('/dashboard')
+            navigate('/layout/dashboard')
         }
     }, [data])
     const onFinishFailed = (errorInfo) => {
@@ -39,7 +43,8 @@ const SignIn = () => {
                     name="username"
                     rules={[{ required: true, message: 'Please input your username!' }]}
                 >
-                    <Input placeholder="Username" />
+                    <Input values={newUser.username}
+                        onChange={(e) => setNewUser(p => ({ ...p, username: e.target.value }))} placeholder="john111" />
                 </Form.Item>
                 <Form.Item
                     label="Password"
@@ -51,7 +56,8 @@ const SignIn = () => {
                         },
                     ]}
                 >
-                    <Input.Password placeholder='Password' />
+                    <Input.Password values={newUser.password}
+                        onChange={(e) => setNewUser(p => ({ ...p, password: e.target.value }))} placeholder='12345678' />
                 </Form.Item>
                 <Form.Item>
                     <Button className='w-full' type="primary" htmlType='submit'>Submit</Button>
